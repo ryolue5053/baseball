@@ -1,16 +1,17 @@
 <? include_once("class/db.php"); ?> 
 <?
-$order = isset($_GET['order']) ? $_GET['order'] : 'teams.id';
-$asc = isset($_GET['asc']) ? (boolean)$_GET['asc'] : true; 
-$team= isset($_GET['team']) ? $_GET['team'] : '1';
-$sql = 'SELECT players.*,teams.ch_name  
-		FROM players 
-		JOIN teams ON teams.id=players.team_id 
-		AND players.team_id= "'. $team . 
-		'" ORDER BY '. $order . ' ' . ($asc ?'asc' : 'desc');
-$sth = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+$sql = 'SELECT scores.* ,teams.ch_name AS team_name FROM scores JOIN teams ON teams.id = scores.team_id WHERE player_id = ' . $_GET['player_id'] . ' ORDER BY year DESC ' ;
+
+$sth = $pdo->prepare($sql);
 $sth->execute();
 $rows = $sth->fetchAll(PDO::FETCH_CLASS);
+
+$sql = 'SELECT * FROM players WHERE id = ' . $_GET['player_id']  ;
+
+$sth = $pdo->prepare($sql);
+$sth->execute();
+$player = $sth->fetch(PDO::FETCH_ASSOC);
+
 ?>
 
 <!doctype html>
@@ -36,15 +37,15 @@ $rows = $sth->fetchAll(PDO::FETCH_CLASS);
 		<!------上面一行: Bootstrap常用字 將整個畫面置中----->
 		<? include('share/nav.php'); ?>
 		
+		<h2><?= $player['name'] ?>打擊成績</h2>
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th>名字</th>
-					<th><a href="index.php?team=<?=$team ?>&order=number&asc=<?= $asc ? 0 : 1 ?>">背號</a></th>
-					<th>球隊</th>
-					<th>種類</th>
-					<th><a href="index.php?team=<?=$team ?>&order=position&asc=<?= $asc ? 0 : 1 ?>">位置</a></th>
-					<th><a href="index.php?team=<?=$team ?>&order=active&asc=<?= $asc ? 0 : 1 ?>">現役/退役</a></th>
+				<td>YEAR</td>
+				<td>TEAM</td>
+				<td>HR</td>
+				<td>H</td>
+				<td>AVG</td>
 				</tr>
 			</thead>
 			
@@ -52,12 +53,12 @@ $rows = $sth->fetchAll(PDO::FETCH_CLASS);
 			<tbody>
 				<? foreach ($rows as $row) { ?>
 				<tr>
-					<td><a href="score.php?player_id=<?= $row->id ?>"><?= $row->name ?></a></td>
-					<td><?= $row->number ?></td>
-					<td><?= $row->ch_name ?></td>
-					<td><?= $row->kind ?></td>	
-					<td><?= $row->position ?></td>	
-					<td><?= ($row->active ?'現役' : '退役');?></td>	
+					<td><?= $row->year ?></td>
+					<td><?= $row->team_name ?></td>
+					<td><?= $row->hr ?></td>
+					<td><?= $row->h ?></td>	
+					<td><?= $row->avg ?></td>	
+				
 				</tr>
 				<? } ?>
 				

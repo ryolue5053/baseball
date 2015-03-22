@@ -1,8 +1,9 @@
 <? include_once("class/db.php"); ?> 
 <?
-$order = isset($_GET['order']) ? $_GET['order'] : 'id';
+$order = isset($_GET['order']) ? $_GET['order'] : 'teams.id';
 $asc = isset($_GET['asc']) ? (boolean)$_GET['asc'] : true; 
-$sql = 'SELECT * FROM players ORDER BY '. $order . ' ' . ($asc ?'asc' : 'desc');
+$team= isset($_GET['team']) ? $_GET['team'] : '1';
+$sql = 'SELECT * FROM players,teams WHERE teams.id=players.team_id and players.team_id= "'. $team . '" ORDER BY '. $order . ' ' . ($asc ?'asc' : 'desc');
 $sth = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 $sth->execute();
 $rows = $sth->fetchAll(PDO::FETCH_CLASS);
@@ -35,23 +36,24 @@ $rows = $sth->fetchAll(PDO::FETCH_CLASS);
 			<thead>
 				<tr>
 					<th>名字</th>
-					<th><a href="index.php?order=number&asc=<?= $asc ? 0 : 1 ?>">背號</a></th>
+					<th><a href="index.php?team=<?=$team ?>&order=number&asc=<?= $asc ? 0 : 1 ?>">背號</a></th>
 					<th>球隊</th>
 					<th>種類</th>
-					<th><a href="index.php?order=position&asc=<?= $asc ? 0 : 1 ?>">位置</a></th>
-					<th><a href="index.php?order=active&asc=<?= $asc ? 0 : 1 ?>">現役/退役</a></th>
+					<th><a href="index.php?team=<?=$team ?>&order=position&asc=<?= $asc ? 0 : 1 ?>">位置</a></th>
+					<th><a href="index.php?team=<?=$team ?>&order=active&asc=<?= $asc ? 0 : 1 ?>">現役/退役</a></th>
 				</tr>
 			</thead>
+			
 			
 			<tbody>
 				<? foreach ($rows as $row) { ?>
 				<tr>
 					<td><?= $row->name ?></td>
 					<td><?= $row->number ?></td>
-					<td><?= $row->team ?></td>
+					<td><?= $row->ch_name ?></td>
 					<td><?= $row->kind ?></td>	
 					<td><?= $row->position ?></td>	
-					<td><?= $row->active ?></td>	
+					<td><?= ($row->active ?'現役' : '退役');?></td>	
 				</tr>
 				<? } ?>
 				

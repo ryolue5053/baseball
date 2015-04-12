@@ -11,6 +11,8 @@ $sql = 'SELECT players.*,teams.ch_name
 $sth = $pdo->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 $sth->execute();
 $rows = $sth->fetchAll(PDO::FETCH_CLASS);
+
+$kindEnum = require 'enums/kind.php';
 ?>
 
 <!doctype html>
@@ -36,6 +38,8 @@ $rows = $sth->fetchAll(PDO::FETCH_CLASS);
 		<!------上面一行: Bootstrap常用字 將整個畫面置中----->
 		<? include('share/nav.php'); ?>
 		
+		<a href="player_add.php?team=<?= $_GET['team'] ?>" class="btn btn-primary">新增</a>
+		
 		<table class="table table-striped">
 			<thead>
 				<tr>
@@ -55,7 +59,7 @@ $rows = $sth->fetchAll(PDO::FETCH_CLASS);
 					<td><a href="score.php?player_id=<?= $row->id ?>"><?= $row->name ?></a></td>
 					<td><?= $row->number ?></td>
 					<td><?= $row->ch_name ?></td>
-					<td><?= $row->kind ?></td>	
+					<td><?=$kindEnum[$row->kind]?></td>	
 					<td><?= $row->position ?></td>	
 					<td><?= ($row->active ?'現役' : '退役');?></td>	
 				</tr>

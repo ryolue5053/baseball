@@ -36,8 +36,19 @@ $player = $sth->fetch(PDO::FETCH_ASSOC);
 	<div class="container">
 		<!------上面一行: Bootstrap常用字 將整個畫面置中----->
 		<? include('share/nav.php'); ?>
-		
-		<h2><?= $player['name'] ?>打擊成績</h2>
+		<h2><?= $player['name'] ?></h2>
+
+		<div class="tabbable"> <!-- Only required for left/right tabs -->
+	  		<ul class="nav nav-tabs">
+	  	
+			    <li class="active"><a href="#tab1" data-toggle="tab">打擊成績</a></li>
+			    <li><a href="#tab2" data-toggle="tab">守備成績</a></li>
+			    <li><a href="#tab3" data-toggle="tab">投球成績</a></li>
+	 		 </ul>
+ 		<div class="tab-content">
+    	<div class="tab-pane active" id="tab1">
+    	
+      <h2><?= $player['name'] ?>打擊成績</h2>
 		<table class="table table-striped">
 			<thead>
 				<tr>
@@ -64,7 +75,71 @@ $player = $sth->fetch(PDO::FETCH_ASSOC);
 				
 			</tbody>
 		</table>
-	</div>
+    </div>
+    <div class="tab-pane" id="tab2">
+      <h2><?= $player['name'] ?>守備成績</h2>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+				<td>YEAR</td>
+				<td>TEAM</td>
+				<td>TC</td>
+				<td>E</td>
+				<td>FPCT</td>
+				</tr>
+			</thead>
+			
+			
+			<tbody>
+				<? foreach ($rows as $row) { ?>
+				<tr>
+					<td><?= $row->year ?></td>
+					<td><?= $row->team_name ?></td>
+					<td><?= $row->TC ?></td>
+					<td><?= $row->E ?></td>	
+					<td><?= $row->FPCT ?></td>	
+				
+				</tr>
+				<? } ?>
+				
+			</tbody>
+		</table>
+    </div>
+    
+    <div class="tab-pane" id="tab3">
+      <h2><?= $player['name'] ?>投球成績</h2>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+				<td>YEAR</td>
+				<td>TEAM</td>
+				<td>IP</td>
+				<td>WHIP</td>
+				<td>ERA</td>
+				</tr>
+			</thead>
+			
+			
+			<tbody>
+				<? foreach ($rows as $row) { ?>
+				<tr>
+					<td><?= $row->year ?></td>
+					<td><?= $row->team_name ?></td>
+					<td><?= $row->IP ?></td>
+					<td><?= $row->WHIP ?></td>	
+					<td><?= $row->ERA ?></td>	
+				
+				</tr>
+				<? } ?>
+				
+			</tbody>
+		</table>
+    </div>
+  </div>
+</div>
+
+		
+</div>
 	
 </body>
 </html>
